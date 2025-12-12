@@ -1,24 +1,11 @@
 from django.shortcuts import render
 
-def rectanglearea(request):
-    context = {}
-    context['area'] = "0"
-    context['l'] = "0"
-    context['b'] = "0"
+def calculate_power(request):
+    power = None
+    if request.method == "POST":
+        current = float(request.POST.get("current"))   # I
+        resistance = float(request.POST.get("resistance"))  # R
+        power = (current ** 2) * resistance            # P = I² × R
+        print(f"Current: {current} A, Resistance: {resistance} Ω, Power: {power:.2f} W")
 
-    if request.method == 'POST':
-        print("POST method is used")
-        l = request.POST.get('length', '0')
-        b = request.POST.get('breadth', '0')
-
-        print("length=", l)
-        print("breadth=", b)
-
-        area = int(l) * int(b)
-        context['area'] = area
-        context['l'] = l
-        context['b'] = b
-
-        print("Area=", area)
-
-    return render(request, 'mathapp/math.html',context)
+    return render(request, 'mathapp/math.html', {'Power': power})

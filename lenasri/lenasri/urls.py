@@ -4,6 +4,5 @@ from mathapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('areaofrectangle/', views.rectanglearea, name="areaofrectangle"),
-    path('', views.rectanglearea, name="areaofrectangleroot"),
+    path('',views.calculate_power),
 ]

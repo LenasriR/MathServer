@@ -39,120 +39,104 @@ math.html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Area of Rectangle</title>
-
-    <style>
-        body {
-            background-color: rgba(183, 57, 151, 0.781);
-            font-size: 20px;
-        }
-
-        .box {
-            width: 500px;
-            height: 300px;
-            background-color: rgba(200, 70, 105, 0.977);
-            margin: 150px auto;
-            border: 7px dashed rgb(69, 10, 10);
-        }
-
-        h1 {
-            color:rgb(69, 10, 10);
-            text-align: center;
-            padding-top: 20px;
-        }
-
-        .formelt {
-            color:rgb(69, 10, 10);
-            text-align: center;
-            margin-top: 7px;
-            margin-bottom: 6px;
-        }
-    </style>
+<title>Power of a Lamp</title>
+<style>
+    body {
+        background-color: powderblue;
+        font-family: Arial;
+    }
+    .box {
+        width: 380px;
+        background-color: plum;
+        color: black;
+        padding: 20px;
+        margin: auto;
+        margin-top: 120px;
+        border: 5px dotted black;
+        text-align: left;
+    }
+    input {
+        width: 150px;
+        padding: 5px;
+    }
+    button {
+        margin-top: 10px;
+        padding: 5px 15px;
+    }
+</style>
 </head>
-
 <body>
 
-<div class="edge">
-    <div class="box">
-        <h1>Area of a Rectangle</h1>
+<div class="box">
+    <h2 style="text-align:center;">Power of a Lamp</h2>
 
-        <form method="POST">
-            {% csrf_token %}
-            
-            <div class="formelt">
-                Length :
-                <input type="text" name="length" value="{{ l }}"> (in m) <br>
-            </div>
+    Current : 
+    <input type="text" id="i"> (in A)
+    <br><br>
 
-            <div class="formelt">
-                Breadth :
-                <input type="text" name="breadth" value="{{ b }}"> (in m) <br>
-            </div>
+    Resistance : 
+    <input type="text" id="r"> (in Ω)
+    <br><br>
 
-            <div class="formelt">
-                <input type="submit" value="Calculate">
-            </div>
+    <button onclick="calc()">Calculate</button>
+    <br><br>
 
-            <div class="formelt">
-                Area :
-                <input type="text" name="area" value="{{ area }}"> m<sup>2</sup>
-            </div>
-        </form>
-
-    </div>
+    Power : 
+    <input type="text" id="p" readonly> W
 </div>
+
+<script>
+function calc() {
+    let I = parseFloat(document.getElementById("i").value);
+    let R = parseFloat(document.getElementById("r").value);
+    
+    if (!isNaN(I) && !isNaN(R)) {
+        document.getElementById("p").value = (I * I * R).toFixed(0);
+    } else {
+        document.getElementById("p").value = "Error";
+    }
+}
+</script>
 
 </body>
 </html>
+
 
 views.py
 
 from django.shortcuts import render
 
-def rectanglearea(request):
-    context = {}
-    context['area'] = "0"
-    context['l'] = "0"
-    context['b'] = "0"
+def calculate_power(request):
+    power = None
+    if request.method == "POST":
+        current = float(request.POST.get("current"))   # I
+        resistance = float(request.POST.get("resistance"))  # R
+        power = (current ** 2) * resistance            # P = I² × R
+        print(f"Current: {current} A, Resistance: {resistance} Ω, Power: {power:.2f} W")
 
-    if request.method == 'POST':
-        print("POST method is used")
-        l = request.POST.get('length', '0')
-        b = request.POST.get('breadth', '0')
+    return render(request, 'mathapp/math.html', {'Power': power})
 
-        print("length=", l)
-        print("breadth=", b)
-
-        area = int(l) * int(b)
-        context['area'] = area
-        context['l'] = l
-        context['b'] = b
-
-        print("Area=", area)
-
-    return render(request, 'mathapp/math.html',context)
 
 urls.py
 
-    from django.contrib import admin
+from django.contrib import admin
 from django.urls import path
 from mathapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('areaofrectangle/', views.rectanglearea, name="areaofrectangle"),
-    path('', views.rectanglearea, name="areaofrectangleroot"),
+    path('',views.calculate_power),
 ]
 
 ~~~
 
 ## SERVER SIDE PROCESSING:
 
-![alt text](<Screenshot 2025-12-10 214548.png>)
+![alt text](<Screenshot 2025-12-12 111806.png>)
 
 ## HOMEPAGE:
 
-![alt text](<Screenshot 2025-12-10 214329.png>)
+![alt text](<Screenshot 2025-12-12 111625.png>)
 
 ## RESULT:
 The program for performing server side processing is completed successfully.
